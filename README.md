@@ -1,7 +1,7 @@
 # amstramgram
 School project
 
-
+```txt
 amstramgram/
 ├── config/
 │   ├── config.mjs
@@ -33,3 +33,4 @@ amstramgram/
 ├── .env
 ├── app.js
 └── package.json
+```
