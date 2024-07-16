@@ -2,7 +2,7 @@ import * as postService from '../services/postService.mjs';
 import { compressImageBuffer, resizeImageBuffer } from '../utils/compression.mjs';
 
 const createPost = async (req, res) => {
-    const { user_uuid, title } = req.body;
+    const { title } = req.body;
     const images = req.files;
 
     if (!title || typeof title !== 'string') {
@@ -26,7 +26,7 @@ const createPost = async (req, res) => {
             images[i] = await compressImageBuffer(images[i], extname, 80);
         }
 
-        const postId = await postService.createPost(user_uuid, title, images);
+        const postId = await postService.createPost(req.user.uuid, title, images);
         res.status(201).json({ postId });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -67,10 +67,19 @@ const findPostsByUserUUID = async (req, res) => {
 const removePostById = async (req, res) => {
     const { id } = req.params;
     try {
+        const post = await postService.findPostById(id);
+        if (post.user_uuid != req.user.uuid && req.user.is_admin != true) {
+            return res.status(403).json({ message: "Insufficient permissions" });
+        }
+    } catch (error) {
+        return res.status(404).json({ message: "Post not found" });
+    }
+
+    try {
         await postService.removePostById(id);
         res.status(200).json({ message: 'Post deleted successfully' });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        return res.status(500).json({ error: error.message });
     }
 };
 

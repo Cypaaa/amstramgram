@@ -1,5 +1,7 @@
+import log from '../utils/logger.mjs'
 import * as postRepository from '../repositories/postRepository.mjs';
 import * as imageRepository from '../repositories/imageRepository.mjs';
+import * as commentRepository from '../repositories/commentRepository.mjs';
 
 const findPosts = async (page, limit) => {
     const posts = await postRepository.findPosts(page, limit);
@@ -32,8 +34,17 @@ const findPostsByUserUUID = async (userUuid, page, limit) => {
 };
 
 const removePostById = async (id) => {
-    await deleteImagesByPostId(id);
-    await postRepository.deletePostById(id);
+    try {
+        await imageRepository.deleteImagesByPostId(id);
+    } catch (e) {log.error(e);}
+    
+    try {
+        await commentRepository.deleteCommentsByPostId(id);
+    } catch (e) {log.error(e);}
+    
+    try {
+        await postRepository.deletePostById(id);
+    } catch (e) {log.error(e);}
 };
 
 const createPost = async (userUuid, title, images) => {

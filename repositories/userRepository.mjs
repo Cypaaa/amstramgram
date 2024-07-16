@@ -25,8 +25,7 @@ const findUsers = async (page = 1, limit = 25) => {
     return rows;
 };
 
-const createUser = async (userData) => {
-    const { email, password, name, username, presentation } = userData;
+const createUser = async (email, password, name, username, presentation) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     const uuid = uuidv4().replace(/-/g, '');
     const uuidBuffer = Buffer.from(uuid, 'hex');

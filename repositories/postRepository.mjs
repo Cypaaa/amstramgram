@@ -1,6 +1,6 @@
 import { pool } from '../config/database.mjs';
 
-const all = "id, HEX(user_uuid) as user_uuid, title";
+const all = "id, HEX(user_uuid) as user_uuid, title, likes";
 
 const findPosts = async (page = 1, limit = 25) => {
     const offset = (page - 1) * limit;
@@ -10,7 +10,7 @@ const findPosts = async (page = 1, limit = 25) => {
 
 const createPost = async (user_uuid, title) => {
     const [result] = await pool.query(
-        `INSERT INTO posts (user_uuid, title) VALUES (?, ?)`,
+        `INSERT INTO posts (user_uuid, title, likes) VALUES (?, ?, 0)`,
         [Buffer.from(user_uuid, 'hex'), title]
     );
     return result;

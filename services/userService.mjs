@@ -1,18 +1,18 @@
 import * as userRepository from '../repositories/userRepository.mjs';
 import { findPostsByUserUUID } from '../services/postService.mjs';
 
-const createUser = async (userData) => {
-    let existingUser = await userRepository.findUserByEmail(userData.email);
+const createUser = async (email, password, name, username, presentation) => {
+    let existingUser = await userRepository.findUserByEmail(email);
     if (existingUser) {
         throw new Error('Email already registered');
     }
 
-    existingUser = await userRepository.findUserByUsername(userData.username);
+    existingUser = await userRepository.findUserByUsername(username);
     if (existingUser) {
         throw new Error('Username already taken');
     }
 
-    return await userRepository.createUser(userData);
+    return await userRepository.createUser(email, password, name, username, presentation);
 };
 
 const findUserByUUID = async (uuid) => {

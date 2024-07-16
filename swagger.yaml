@@ -1,410 +1,443 @@
 openapi: 3.0.0
 info:
-    title: Sample API
-    description: Example API using Swagger/OpenAPI 3.0
-    version: 1.0.0
+  title: Your API
+  version: 1.0.0
+  description: API documentation for your application
 
 servers:
-    - url: http://localhost:3000/api/v1
-      description: Development server
-
-paths:
-    /users:
-        get:
-            summary: Get all users
-            tags:
-                - Users
-            responses:
-                "200":
-                    description: A list of users
-                    content:
-                        application/json:
-                            schema:
-                                type: array
-                                items:
-                                    $ref: "#/components/schemas/User"
-
-        post:
-            summary: Create a new user
-            tags:
-                - Users
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/UserCreate"
-            responses:
-                "201":
-                    description: User created successfully
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    data:
-                                        type: string
-                                        example: f1a377c83f864eebafb6abb236f7c47b
-                                    message:
-                                        type: string
-                "400":
-                    description: Invalid input
-
-    /users/{userId}:
-        parameters:
-            - in: path
-              name: userId
-              required: true
-              schema:
-                  type: string
-              description: ID of the user to retrieve
-        get:
-            summary: Get a user by ID
-            tags:
-                - Users
-            responses:
-                "200":
-                    description: User details
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/User"
-                "404":
-                    description: User not found
-
-        put:
-            summary: Update a user by ID
-            tags:
-                - Users
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/UserUpdate"
-            responses:
-                "200":
-                    description: User updated successfully
-                "400":
-                    description: Invalid input
-                "404":
-                    description: User not found
-
-        delete:
-            summary: Delete a user by ID
-            tags:
-                - Users
-            responses:
-                "204":
-                    description: User deleted successfully
-                "404":
-                    description: User not found
-
-    /users/{uuid}/posts:
-        parameters:
-            - in: path
-              name: uuid
-              required: true
-              schema:
-                  type: string
-                  example: f1a377c8-3f86-4eeb-afb6-abb236f7c47b
-              description: ID of the user whose posts to retrieve
-        get:
-            summary: Get posts by user UUID
-            tags:
-                - Users
-            parameters:
-                - $ref: "#/components/parameters/UserId"
-                - in: query
-                  name: page
-                  schema:
-                      type: integer
-                      example: 1
-                  description: Page number
-                - in: query
-                  name: limit
-                  schema:
-                      type: integer
-                      example: 5
-                  description: Number of posts per page
-            responses:
-                "200":
-                    description: List of posts by user UUID
-                    content:
-                        application/json:
-                            schema:
-                                type: array
-                                items:
-                                    $ref: "#/components/schemas/Post"
-                "404":
-                    description: User not found
-                "500":
-                    description: Internal server error
-
-    /posts:
-        get:
-            summary: Get all posts
-            tags:
-                - Posts
-            responses:
-                "200":
-                    description: A list of posts
-                    content:
-                        application/json:
-                            schema:
-                                type: array
-                                items:
-                                    $ref: "#/components/schemas/Post"
-
-        post:
-            summary: Create a new post
-            tags:
-                - Posts
-            requestBody:
-                required: true
-                content:
-                    multipart/form-data:
-                        schema:
-                            type: object
-                            properties:
-                                user_uuid:
-                                    type: string
-                                    example: f1a377c8-3f86-4eeb-afb6-abb236f7c47b
-                                title:
-                                    type: string
-                                    example: Sample Post
-                                images:
-                                    type: array
-                                    items:
-                                        type: string
-                                        format: binary
-                            required:
-                                - user_uuid
-                                - title
-                                - images
-            responses:
-                "201":
-                    description: Post created successfully
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    data:
-                                        type: integer
-                                        example: 1
-                                    message:
-                                        type: string
-                "400":
-                    description: Invalid input
-
-    /posts/{postId}:
-        parameters:
-            - in: path
-              name: postId
-              required: true
-              schema:
-                  type: integer
-              description: ID of the post to retrieve
-        get:
-            summary: Get a post by ID
-            tags:
-                - Posts
-            responses:
-                "200":
-                    description: Post details
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Post"
-                "404":
-                    description: Post not found
-
-        put:
-            summary: Update a post by ID
-            tags:
-                - Posts
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/PostUpdate"
-            responses:
-                "200":
-                    description: Post updated successfully
-                "400":
-                    description: Invalid input
-                "404":
-                    description: Post not found
-
-        delete:
-            summary: Delete a post by ID
-            tags:
-                - Posts
-            responses:
-                "204":
-                    description: Post deleted successfully
-                "404":
-                    description: Post not found
+  - url: http://localhost:3000
+    description: Local server
 
 components:
-    schemas:
-        User:
-            type: object
-            properties:
-                uuid:
-                    type: string
-                    example: f1a377c83f864eebafb6abb236f7c47b
-                email:
-                    type: string
-                    example: john.doe@example.com
-                name:
-                    type: string
-                    example: John Doe
-                username:
-                    type: string
-                    example: john_doe
-                presentation:
-                    type: string
-                    example: A brief introduction
-                isAdmin:
-                    type: boolean
-                    example: false
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    UnauthorizedError:
+      description: Access token is missing or invalid
+    ForbiddenError:
+      description: Insufficient permissions
+    NotFoundError:
+      description: Resource not found
 
-        UserCreate:
-            type: object
-            properties:
-                email:
-                    type: string
-                    example: john.doe@example.com
-                password:
-                    type: string
-                    example: secret
-                name:
-                    type: string
-                    example: John Doe
+security:
+  - BearerAuth: []
+
+paths:
+  /login:
+    post:
+      summary: Login a user
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
                 username:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+                - email
+                - password
+      responses:
+        200:
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
                     type: string
-                    example: john_doe
+                  user:
+                    type: object
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /comments/{id}:
+    get:
+      summary: Get comment by ID
+      tags:
+        - Comments
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Comment found
+          content:
+            application/json:
+              schema:
+                type: object
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+
+  /posts/{post_id}/comments:
+    get:
+      summary: Get comments by post ID
+      tags:
+        - Comments
+      parameters:
+        - name: post_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Comments found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+    post:
+      summary: Create a comment
+      tags:
+        - Comments
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: post_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+              required:
+                - content
+      responses:
+        201:
+          description: Comment created
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /comments/{id}:
+    delete:
+      summary: Delete comment by ID
+      tags:
+        - Comments
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        204:
+          description: Comment deleted
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /images/{id}:
+    get:
+      summary: Get image by ID
+      tags:
+        - Images
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Image found
+          content:
+            application/json:
+              schema:
+                type: object
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+
+  /users:
+    get:
+      summary: Get users
+      tags:
+        - Users
+      responses:
+        200:
+          description: Users found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+    post:
+      summary: Create a user
+      tags:
+        - Users
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+                name:
+                  type: string
+                username:
+                  type: string
                 presentation:
-                    type: string
-                    example: A brief introduction
-            required:
+                  type: string
+              required:
                 - email
                 - password
                 - name
                 - username
+      responses:
+        201:
+          description: User created
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
 
-        UserUpdate:
-            type: object
-            properties:
+  /users/{uuid}:
+    get:
+      summary: Get user by UUID
+      tags:
+        - Users
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: User found
+          content:
+            application/json:
+              schema:
+                type: object
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+    delete:
+      summary: Delete user by UUID
+      tags:
+        - Users
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        204:
+          description: User deleted
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+    put:
+      summary: Update user by UUID
+      tags:
+        - Users
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
                 email:
-                    type: string
-                    example: john.doe@example.com
+                  type: string
                 name:
-                    type: string
-                    example: John Doe
+                  type: string
                 username:
-                    type: string
-                    example: john_doe
+                  type: string
                 presentation:
-                    type: string
-                    example: A brief introduction
-            required:
-                - email
-                - name
-                - username
+                  type: string
+      responses:
+        200:
+          description: User updated
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
 
-        Post:
-            type: object
-            properties:
-                id:
-                    type: integer
-                    example: 1
-                user_uuid:
-                    type: string
-                    example: f1a377c8-3f86-4eeb-afb6-abb236f7c47b
-                title:
-                    type: string
-                    example: Sample Post
+  /users/{uuid}/password:
+    put:
+      summary: Update user password by UUID
+      tags:
+        - Users
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+              required:
+                - password
+      responses:
+        200:
+          description: User password updated
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
 
-        PostCreate:
-            type: object
-            properties:
-                user_uuid:
-                    type: string
-                    example: f1a377c8-3f86-4eeb-afb6-abb236f7c47b
+  /users/{uuid}/posts:
+    get:
+      summary: Get posts by user UUID
+      tags:
+        - Users
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Posts found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+
+  /posts:
+    get:
+      summary: Get all posts
+      tags:
+        - Posts
+      responses:
+        200:
+          description: Posts found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+    post:
+      summary: Create a post
+      tags:
+        - Posts
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
                 title:
-                    type: string
-                    example: Sample Post
+                  type: string
                 images:
-                    type: array
-                    items:
-                        type: string
-                        format: binary
-            required:
-                - user_uuid
-                - title
-                - images
-
-        PostUpdate:
-            type: object
-            properties:
-                title:
-                    type: string
-                    example: Updated Post Title
-            required:
-                - title
-
-        Image:
-            type: object
-            properties:
-                id:
-                    type: integer
-                    example: 1
-                post_id:
-                    type: integer
-                    example: 1
-                image:
+                  type: array
+                  items:
                     type: string
                     format: binary
-            required:
-                - post_id
-                - image
+              required:
+                - title
+                - images
+      responses:
+        201:
+          description: Post created
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
 
-        Error:
-            type: object
-            properties:
-                message:
-                    type: string
-
-    parameters:
-        userId:
-            in: path
-            name: userId
-            required: true
-            schema:
-                type: string
-                example: f1a377c8-3f86-4eeb-afb6-abb236f7c47b
-
-        postId:
-            in: path
-            name: postId
-            required: true
-            schema:
-                type: integer
-                example: 1
-
-responses:
-    BadRequest:
-        description: Invalid request
-
-    NotFound:
-        description: Resource not found
-
-    Unauthorized:
-        description: Unauthorized access
-
-    InternalServerError:
-        description: Internal server error
+  /posts/{id}:
+    get:
+      summary: Get post by ID
+      tags:
+        - Posts
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Post found
+          content:
+            application/json:
+              schema:
+                type: object
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+    delete:
+      summary: Delete post by ID
+      tags:
+        - Posts
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        204:
+          description: Post deleted
+        401:
+          $ref: '#/components/responses/UnauthorizedError'

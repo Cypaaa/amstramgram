@@ -1,5 +1,5 @@
 services:
-    unipal.mysql.db:
+    amstramgram.mysql.db:
         image: "mysql:latest"
         restart: always
         environment:
@@ -11,3 +11,12 @@ services:
             - ./config/sql:/docker-entrypoint-initdb.d
         ports:
             - "3306:3306"
+    
+    amstramgram.redis.cache:
+        image: "redis:7.2.5-alpine"
+        restart: always
+        command: ["redis-server", "--save", "20", "1", "--loglevel", "warning", "--requirepass", "${REDIS_PASSWORD}"]
+        environment:
+            REDIS_PASSWORD: ${REDIS_PASSWORD}
+        ports:
+            - "6379:6379"

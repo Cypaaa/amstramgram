@@ -10,7 +10,7 @@ const findImagesByPostId = async (postId) => {
     return rows;
 };
 
-export const createImage = async (postId, imageBuffer) => {
+const createImage = async (postId, imageBuffer) => {
     const [result] = await pool.query(
         'INSERT INTO images (post_id, image) VALUES (?, ?)',
         [postId, imageBuffer]
@@ -23,4 +23,4 @@ const deleteImagesByPostId = async (postId) => {
     await pool.query('DELETE FROM images WHERE post_id = ?', [postId]);
 };
 
-export { findImageById, findImagesByPostId, deleteImagesByPostId };
+export { findImageById, findImagesByPostId, createImage, deleteImagesByPostId };

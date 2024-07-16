@@ -1,22 +1,33 @@
 import express from 'express';
 import YAML from 'yamljs';
 import swaggerUi from 'swagger-ui-express';
+import log from './utils/logger.mjs'
 import * as database from './config/database.mjs';
 import config from './config/config.mjs';
 import userRoutes from './routes/userRoutes.mjs';
 import postRoutes from './routes/postRoutes.mjs';
 import imageRoutes from './routes/imageRoutes.mjs';
+import authRoutes from './routes/authRoutes.mjs';
 import { logMiddleware } from './middlewares/logMiddleware.mjs';
 import { errorMiddleware } from './middlewares/errorMiddleware.mjs'
+import * as redis from './config/redis.mjs';
 
-// Database
+// Cache (redis)
+redis.ping(redis.cache, (err) => {
+    if (err) {
+        log.error(`Error: couldn't ping redis: ${err}`)
+        process.exit(1);
+    }
+    log.success("Redis ping successful");
+});
+
+// Database (mysql)
 database.ping(await database.pool.getConnection(), (err) => {
     if (err) {
-        console.log("\x1b[31mError: couldn't ping database:", err);
+        log.error(`Error: couldn't ping database: ${err}`)
         process.exit(1);
-        return;
     }
-    console.log("Database ping successful");
+    log.success("Database ping successful");
 });
 
 // Application
@@ -25,12 +36,13 @@ const apiPath = "/api/" + config.VERSION;
 
 // pre routes middleware
 app.use(express.json());
-app.use(logMiddleware);
+if (config.DEBUG) app.use(logMiddleware);
 
 // routes
 app.use(apiPath, userRoutes);
 app.use(apiPath, postRoutes);
 app.use(apiPath, imageRoutes);
+app.use(apiPath, authRoutes);
 
 // swagger docs
 app.use('/', swaggerUi.serve, swaggerUi.setup(YAML.load('./swagger.yaml')));
@@ -40,5 +52,5 @@ app.use(errorMiddleware);
 
 app.listen(config.PORT, () => {
     console.clear();
-    console.log(`Server is running on http://localhost:${config.PORT}`);
+    log.information(`Server is running on http://localhost:${config.PORT}/`);
 });

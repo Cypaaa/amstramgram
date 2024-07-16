@@ -1,5 +1,7 @@
+import log from '../utils/logger.mjs'
+
 const logMiddleware = (req, res, next) => {
-    console.log(`${req.method} ${req.url}`);
+    log.information(`${req.method} ${req.url}`);
     next();
 };
 
