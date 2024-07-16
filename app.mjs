@@ -39,10 +39,10 @@ app.use(express.json());
 if (config.DEBUG) app.use(logMiddleware);
 
 // routes
+app.use(apiPath, authRoutes);
 app.use(apiPath, userRoutes);
 app.use(apiPath, postRoutes);
 app.use(apiPath, imageRoutes);
-app.use(apiPath, authRoutes);
 
 // swagger docs
 app.use('/', swaggerUi.serve, swaggerUi.setup(YAML.load('./swagger.yaml')));

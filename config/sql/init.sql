@@ -6,7 +6,6 @@ CREATE TABLE users (
     username VARCHAR(30) NOT NULL UNIQUE,
     presentation VARCHAR(150),
     is_admin BOOLEAN NOT NULL DEFAULT 0,
-    likes BIGINT UNSIGNED NOT NULL DEFAULT 0,
     PRIMARY KEY (uuid)
 );
  
@@ -14,6 +13,7 @@ CREATE TABLE posts (
     id BIGINT UNSIGNED AUTO_INCREMENT NOT NULL,
     user_uuid BINARY(16) NOT NULL,
     title VARCHAR(100) NOT NULL,
+    likes BIGINT UNSIGNED NOT NULL DEFAULT 0,
     FOREIGN KEY (user_uuid) REFERENCES users(uuid),
     PRIMARY KEY (id)
 );

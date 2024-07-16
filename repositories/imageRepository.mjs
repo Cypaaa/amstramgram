@@ -2,11 +2,15 @@ import { pool } from '../config/database.mjs';
 
 const findImageById = async (id) => {
     const [rows] = await pool.query('SELECT * FROM images WHERE id = ?', [id]);
+    rows[0].image = Buffer.from(rows[0].image).toString('base64');
     return rows[0];
 };
 
 const findImagesByPostId = async (postId) => {
     const [rows] = await pool.query('SELECT * FROM images WHERE post_id = ?', [postId]);
+    for (let i = 0; i < rows.length; i++) {
+        rows[i].image = Buffer.from(rows[i].image).toString('base64');
+    }
     return rows;
 };
 

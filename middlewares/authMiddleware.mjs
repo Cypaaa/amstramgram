@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import config from '../config/config.mjs';
 import { cache } from '../config/redis.mjs';
+import * as userRepository from '../repositories/userRepository.mjs' // bcs userService also returns 5 posts
 
 const authMiddleware = async (req, res, next) => {
     const token = req.headers.authorization?.split(' ')[1];
@@ -15,7 +16,7 @@ const authMiddleware = async (req, res, next) => {
             throw new Error("Invalid token provided");
         }
 
-        const user = await userService.findUserByUUID(decoded.uuid); // trow error if not found (array out of bound)
+        const user = await userRepository.findUserByUUID(decoded.uuid); // trow error if not found (array out of bound)
 
         req.user = user;
         next();

@@ -8,7 +8,7 @@ const router = express.Router();
 router.get('/users/:uuid', optionalAuthMiddleware, findUserByUUID);
 router.get('/users/:uuid/posts', optionalAuthMiddleware, findUserPostsByUUID);
 router.get('/users', optionalAuthMiddleware, findUsers);
-router.post('/users', authMiddleware, createUser);
+router.post('/users', createUser);
 router.delete('/users/:uuid', authMiddleware, removeUserByUUID);
 router.put('/users/:uuid', authMiddleware, updateUserByUUID);
 router.put('/users/:uuid/password', authMiddleware, updateUserPasswordByUUID);
