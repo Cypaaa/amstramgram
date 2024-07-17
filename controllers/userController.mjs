@@ -41,6 +41,7 @@ const findUserByUUID = async (req, res) => {
         res.status(200).json({
             user: {
                 uuid: user.user.uuid,
+                name: user.user.name,
                 username: user.user.username,
                 presentation: user.user.presentation,
                 is_admin: user.user.is_admin
@@ -76,12 +77,11 @@ const findUsers = async (req, res) => {
         res.status(200).json(
             users.map(user => {
                 return {
-                    user: {
-                        uuid: user.uuid,
-                        username: user.username,
-                        presentation: user.presentation,
-                        is_admin: user.is_admin
-                    },
+                    uuid: user.uuid,
+                    name: user.name,
+                    username: user.username,
+                    presentation: user.presentation,
+                    is_admin: user.is_admin
                 };
             })
         );
