@@ -7,9 +7,9 @@ const findCommentById = async (id) => {
     return rows[0];
 };
 
-const findCommentsByPostId = async (postId, page = 1, limit = 5) => {
+const findCommentsByPostId = async (post_id, page = 1, limit = 5) => {
     const offset = (page - 1) * limit;
-    const [rows] = await pool.query('SELECT ' + all + ' FROM comments WHERE post_id = ? LIMIT ? OFFSET ?', [postId, parseInt(limit), parseInt(offset)]);
+    const [rows] = await pool.query('SELECT ' + all + ' FROM comments WHERE post_id = ? LIMIT ? OFFSET ?', [post_id, parseInt(limit), parseInt(offset)]);
     return rows;
 };
 
@@ -26,8 +26,8 @@ const deleteCommentById = async (id) => {
     await pool.query('DELETE FROM comments WHERE id = ?', [id]);
 };
 
-const deleteCommentsByPostId = async (postId) => {
-    await pool.query('DELETE FROM comments WHERE post_id = ?', [postId]);
+const deleteCommentsByPostId = async (post_id) => {
+    await pool.query('DELETE FROM comments WHERE post_id = ?', [post_id]);
 };
 
 export { findCommentById, findCommentsByPostId, createComment, deleteCommentById, deleteCommentsByPostId };

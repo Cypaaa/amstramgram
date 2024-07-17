@@ -4,8 +4,8 @@ const findCommentById = async (id) => {
     return await commentRepository.findCommentById(id);
 };
 
-const findCommentsByPostId = async (postId, page, limit) => {
-    return await commentRepository.findCommentsByPostId(postId, page, limit);
+const findCommentsByPostId = async (post_id, page, limit) => {
+    return await commentRepository.findCommentsByPostId(post_id, page, limit);
 };
 
 const createComment = async (user_uuid, post_id, content) => {

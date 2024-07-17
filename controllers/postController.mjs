@@ -24,10 +24,11 @@ const createPost = async (req, res) => {
 
             images[i] = await resizeImageBuffer(images[i].buffer);
             images[i] = await compressImageBuffer(images[i], extname, 80);
+            images[i] = images[i].toString('base64');
         }
 
-        const postId = await postService.createPost(req.user.uuid, title, images);
-        res.status(201).json({ postId });
+        const post_id = await postService.createPost(req.user.uuid, title, images);
+        res.status(201).json({ post_id });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

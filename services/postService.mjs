@@ -6,11 +6,7 @@ import * as commentRepository from '../repositories/commentRepository.mjs';
 const findPosts = async (page, limit) => {
     const posts = await postRepository.findPosts(page, limit);
     for (const post of posts) {
-        const images = await imageRepository.findImagesByPostId(post.id);
-        post.images = images;
-        post.images.forEach(image => {
-            image.image = Buffer.from(image.image).toString('base64');
-        });
+        post.images = await imageRepository.findImagesByPostId(post.id);
     }
     return posts;
 };
@@ -55,13 +51,13 @@ const createPost = async (userUuid, title, images) => {
     }
 
     const result = await postRepository.createPost(userUuid, title);
-    const postId = result.insertId;
+    const post_id = result.insertId;
 
     for (const image of images) {
-        imageRepository.createImage(postId, image);
+        imageRepository.createImage(post_id, image);
     }
 
-    return postId;
+    return post_id;
 };
 
 export { findPosts, findPostById, findPostsByUserUUID, removePostById, createPost };

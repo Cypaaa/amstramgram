@@ -36,6 +36,7 @@ const apiPath = "/api/" + config.VERSION;
 
 // pre routes middleware
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 if (config.DEBUG) app.use(logMiddleware);
 
 // routes

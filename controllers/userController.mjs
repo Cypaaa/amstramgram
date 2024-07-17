@@ -25,27 +25,28 @@ const createUser = async (req, res) => {
     }
 };
 
+const findUserSelf = async (req, res) => {
+    res.status(200).json(req.user);
+};
+
 const findUserByUUID = async (req, res) => {
     const { uuid } = req.params;
     try {
         const user = await userService.findUserByUUID(uuid);
+        user.user.password = "";
 
-        if (req?.user?.is_admin != true) {
+        if (req?.user?.is_admin == true) {
             return res.status(200).json(user);
         }
-        res.status(200).json(
-            users.map(user => {
-                return {
-                    user: {
-                        uuid: user.user.uuid,
-                        username: user.user.username,
-                        presentation: user.user.presentation,
-                        is_admin: user.user.is_admin
-                    },
-                    posts: user.posts
-                };
-            })
-        );
+        res.status(200).json({
+            user: {
+                uuid: user.user.uuid,
+                username: user.user.username,
+                presentation: user.user.presentation,
+                is_admin: user.user.is_admin
+            },
+            posts: user.posts
+        });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -67,18 +68,23 @@ const findUsers = async (req, res) => {
     const { page = 1, limit = 25 } = req.query;
     try {
         const users = await userService.findUsers(page, limit > 25 || limit < 1 ? 25 : limit); // min limit: 1, max limit: 25
-        if (req?.user?.is_admin != true) {
+
+        if (req?.user?.is_admin == true) {
             return res.status(200).json(users);
         }
-        res.status(200).json({
-            user: {
-                uuid: user.user.uuid,
-                username: user.user.username,
-                presentation: user.user.presentation,
-                is_admin: user.user.is_admin
-            },
-            posts: user.posts
-        });
+
+        res.status(200).json(
+            users.map(user => {
+                return {
+                    user: {
+                        uuid: user.uuid,
+                        username: user.username,
+                        presentation: user.presentation,
+                        is_admin: user.is_admin
+                    },
+                };
+            })
+        );
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -147,4 +153,4 @@ const updateUserPasswordByUUID = async (req, res) => {
     }
 };
 
-export { createUser, findUserByUUID, findUserPostsByUUID, findUsers, removeUserByUUID, updateUserByUUID, updateUserPasswordByUUID };
+export { createUser, findUserSelf, findUserByUUID, findUserPostsByUUID, findUsers, removeUserByUUID, updateUserByUUID, updateUserPasswordByUUID };
